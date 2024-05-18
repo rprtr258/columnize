@@ -2,8 +2,9 @@ package columnize
 
 import (
 	"strings"
-	"unicode/utf8"
 	"unsafe"
+
+	runewidth "github.com/mattn/go-runewidth"
 )
 
 type config struct {
@@ -66,7 +67,7 @@ func Columnize(rows [][]string, opts ...Option) string {
 	widths := make([]int, columns)
 	for _, row := range rows {
 		for i, elem := range row {
-			widths[i] = max(widths[i], utf8.RuneCountInString(elem))
+			widths[i] = max(widths[i], runewidth.StringWidth(elem))
 		}
 	}
 
@@ -93,7 +94,7 @@ func Columnize(rows [][]string, opts ...Option) string {
 				b = append(b, elem...)
 				b = append(b, '\n')
 			} else {
-				cnt := widths[i] - utf8.RuneCountInString(elem)
+				cnt := widths[i] - runewidth.StringWidth(elem)
 				b = append(b, elem...)
 				b = append(b, _spaces[:cnt]...)
 				b = append(b, config.separator...)
