@@ -170,19 +170,6 @@ func TestColumnize(t *testing.T) {
 	}
 }
 
-func TestStringWidth(t *testing.T) {
-	for s, expected := range map[string]int{
-		"":  0,
-		"x": 1,
-	} {
-		t.Run(s, func(t *testing.T) {
-			if actual := stringWidth(s); actual != expected {
-				t.Errorf("Expected %d, got %d", expected, actual)
-			}
-		})
-	}
-}
-
 func BenchmarkColumnWidthCalculator(b *testing.B) {
 	input := [][]string{
 		{"UUID A", "UUID B", "UUID C", "Column D", "Column E"},

@@ -38,17 +38,6 @@ func WithHeaders(headers ...string) Option {
 
 var _spaces = strings.Repeat(" ", 1024)
 
-// runewidth.StringWidth allocates hella memory which makes it totaly useless
-// we just have to iterate over runes ourselves, luckily runewidth.RuneWidth does
-// not allocate
-func stringWidth(s string) int {
-	res := 0
-	for _, r := range s {
-		res += runewidth.RuneWidth(r)
-	}
-	return res
-}
-
 // Columnize is the public-facing interface that takes a list of strings and
 // returns nicely aligned column-formatted text.
 func Columnize(rows [][]string, opts ...Option) string {
@@ -78,7 +67,7 @@ func Columnize(rows [][]string, opts ...Option) string {
 	widths := make([]int, columns)
 	for _, row := range rows {
 		for i, elem := range row {
-			widths[i] = max(widths[i], stringWidth(elem))
+			widths[i] = max(widths[i], runewidth.StringWidth(elem))
 		}
 	}
 
@@ -105,7 +94,7 @@ func Columnize(rows [][]string, opts ...Option) string {
 				b = append(b, elem...)
 				b = append(b, '\n')
 			} else {
-				cnt := widths[i] - stringWidth(elem)
+				cnt := widths[i] - runewidth.StringWidth(elem)
 				b = append(b, elem...)
 				b = append(b, _spaces[:cnt]...)
 				b = append(b, config.separator...)
